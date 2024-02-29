@@ -1,0 +1,138 @@
+<HTML>
+    <BODY>
+    <style> 
+        html {
+        font-size: 1.9em;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+        color: white;
+        }
+    </style>
+
+    <button  style="position:absolute; left: 0; top : 600;" onclick="doanimate()">Do animate</button> 
+
+    <div style="position:absolute; left: 0; top : 0; white-space: no-wrap;">
+        <img src="tv.png">
+    </div>
+    
+    <div id="wherewordsgo" style="position:absolute; left: 300; top: 100; width: 280;">
+    </div>
+
+    
+    <div style="position:absolute; left: 0; top : 0; white-space: no-wrap;">
+        <img src="front.png" id="dog">
+    </div>
+
+    <script>
+
+    var text = "BITE,BACK,WITH,KENT BROCKMAN,AND,HIS,CHANNEL 6,CONSUMER,WATCHDOG,UNIT";
+    
+    var splittage = text.split(',')
+    var wherewordsgo = document.getElementById("wherewordsgo");
+
+    var cnt = 0;
+
+    var audio = new Audio('bark.wav');
+    
+
+    var keyFrames = '\
+        @keyframes ANIMNAME-IDLE { \
+            100% {left: ANIMLEFT; top:ANIMTOP;color: #00000000;} \
+            \
+        } \
+        @keyframes ANIMNAME-RUNNING { \
+            from {left: ANIMLEFT; top:ANIMTOP; color:white;} \
+            to {left: ANIMX; top: ANIMY; color:white;} \
+        } \
+    }';
+
+    for (const word of splittage)
+    {
+        const newDiv = document.createElement("div");
+
+        const newContent = document.createTextNode(word);
+        newDiv.appendChild(newContent);
+
+        newDiv.style="display: inline-block;";
+
+        newDiv.id = cnt;
+
+        wherewordsgo.appendChild(newDiv);
+        wherewordsgo.appendChild(document.createTextNode(" "));
+
+        cnt++;
+    }
+
+    var cunt = 0;
+
+    function myTimer() {
+
+        var curr = cunt / 2;
+        if (curr == cnt) {
+            document.getElementById("dog").src="front.png";
+            return;
+        }
+        
+        if (cunt % 2 == 0)
+        {
+            document.getElementById("dog").src="bark.png";
+
+            var thediv = document.getElementById(curr);
+            thediv.style.animationName="AN" + curr + "-RUNNING";
+            thediv.style.animationDuration = "0.25s";
+            thediv.style.animationFillMode = "forwards";
+            audio.play();
+            
+        }
+        else
+        {
+            document.getElementById("dog").src="side.png";
+            
+        }
+        cunt++;
+    } 
+
+    function doanimate(element, color) {
+        // start backwards from the end to avoid wrap foulups
+        for (x = cnt; x > 0; x--) {
+            var thediv = document.getElementById(x - 1);
+
+            var xpos = thediv.getBoundingClientRect().x;
+            var ypos = thediv.getBoundingClientRect().y;
+
+            var xwidth = thediv.getBoundingClientRect().width;
+
+            var ogleft = -xwidth - 50;
+            var ogtop = 70;
+
+            var animstyle = document.createElement('style');
+            animstyle.type = 'text/css';
+            animstyle.innerHTML = 
+                keyFrames.replace(/ANIMX/g, xpos-300).
+                replace(/ANIMY/g, ypos - 100).
+                replace(/ANIMLEFT/g, ogleft).
+                replace(/ANIMTOP/g, ogtop).
+                replace(/ANIMNAME/g, "AN"+(x-1));
+
+            thediv.style.left = ogleft;
+            thediv.style.top = ogtop;
+
+            thediv.style.animationName="AN" + (x-1) + "-IDLE";
+            thediv.style.animationDuration = "0s";
+            thediv.style.animationFillMode = "forwards";
+            //thediv.style.animationPlayState = "paused";
+
+            document.getElementsByTagName('head')[0].appendChild(animstyle);
+
+            thediv.style.position = "absolute";
+
+
+        }
+        setInterval(myTimer, 300);
+    }
+
+    
+    </script> 
+    
+    </BODY>
+    </HTML>
