@@ -1,45 +1,49 @@
 <HTML>
-    <BODY>
-    <style> 
-        html {
-        font-size: 1.9em;
-        font-family: Arial, Helvetica, sans-serif;
-        font-weight: bold;
 
-        color: white;
+<BODY>
+    <style>
+        html {
+            font-size: 1.9em;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+            background: #554572;
+            color: white;
         }
     </style>
-    <textarea style="position:absolute; left: 0; top: 500;" cols="100" rows="6" type="text" id="textage">
-    
-    </textarea>
-    <button  style="position:absolute; left: 0; top: 600;" onclick="doanimate()">Do animate</button>
 
     <div style="position:absolute; left: 0; top : 0; ">
         <img src="tv.png">
+        <div style="display: inline-block; width: 640px; height: 320px">
+            <textarea oninput="drawtext()"
+                style="font-family: Arial, Helvetica, sans-serif; font-size: 0.8em; color: black; width:80%; height: 100%"
+                type="text" id="textage">
+            </textarea>
+            <button style="width:18%; height: 100%; vertical-align:top; font-size: 2em;" onclick="doanimate()">GO</button>
+        </div>
     </div>
-    <div id="wherewordsgo" style="position:absolute; left: 300; top: 80; width: 300;">
+    <div id="wherewordsgo" style="position:absolute; left: 300; top: 100; width: 280;">
     </div>
     <div style="position:absolute; left: 0; top : 0; ">
         <img src="front.png" id="dog">
     </div>
 
 
-    
-
-
     <script>
 
-    //var text = "*BITE *BACK WITH **KENT_BROCKMAN AND HIS *CHANNEL *6 CONSUMER WATCHDOG UNIT";
-    //var text = "WELCOME TO THE **BITE **BACK **GENERATOR YES I SPENT AN ABSURD AMOUNT OF TIME ON THIS";
-    document.getElementById("textage").value = "*BITE *BACK WITH **KENT_BROCKMAN AND HIS *CHANNEL *6 CONSUMER WATCHDOG UNIT";
+        //var text = "*BITE *BACK WITH **KENT_BROCKMAN AND HIS *CHANNEL *6 CONSHDOG UNIT";
+        //var text = "WELCOME TO THE **BITE **BACK **GENERATOR YES I SPENT AN ABSURD AMOUNT OF TIME ON THIS";
+        document.getElementById("textage").value = "*BITE *BACK WITH **KENT_BROCKMAN \n\
+\n\
+AND HIS *CHANNEL *6 CONSUMER WATCHDOG UNIT";
 
 
-    var cnt = 0;
+        var cnt = 0;
 
-    var audio = new Audio('bark.wav');
-    
+        var audio = new Audio('bark.wav');
+        audio.preload = "auto";
 
-    var keyFrames = '\
+
+        var keyFrames = '\
         @keyframes ANIMNAME-IDLE { \
             100% {left: ANIMLEFT; top:ANIMTOP;color: #00000000;  transform: scale(0.2);} \
             \
@@ -51,147 +55,183 @@
     }';
 
 
-    var cunt = 0;
+        var cunt = 0;
 
-    drawtext();
+        var pauses = [];
 
-    function myTimer() {
+        drawtext();
 
-        var curr = cunt / 2;
-        if (curr == cnt) {
-            document.getElementById("dog").src="front.png";
-            return;
-        }
-        
-        if (cunt % 2 == 0)
-        {
-            document.getElementById("dog").src="bark.png";
+        function myTimer() {
 
-            var thediv = document.getElementById(curr);
-            thediv.style.animationName="AN" + curr + "-RUNNING";
-            thediv.style.animationDuration = "0.25s";
-            thediv.style.animationFillMode = "forwards";
-            audio.play();
-            
-        }
-        else
-        {
-            document.getElementById("dog").src="side.png";
-            
-        }
-        cunt++;
-    } 
-
-    function drawtext(){
-        var text = document.getElementById("textage").value;
-        var splittage = text.split(' ');
-        var wherewordsgo = document.getElementById("wherewordsgo");
-        cnt = 0; 
-        wherewordsgo.replaceChildren();
-
-
-        
-        for (var wd of splittage)
-        {
-            const divDiv = document.createElement("div");
-
-            const newDiv = document.createElement("div");
-            
-            var word="";
-
-            if (wd.startsWith("**")){
-                newDiv.style = "display: inline-block; font-size: 1.1em; transform: scale(1, 1.6); transform-origin: 0 0; white-space: nowrap;";
-                divDiv.style="display: inline-block;  margin-bottom: 4%;  ";
-                word = wd.substring(2).replace("_", " ");
-            } else if (wd.startsWith("*")){
-                newDiv.style = "display: inline-block; font-size: 1.4em;  transform: scale(1, 1.4); transform-origin: 0 0;  white-space: nowrap; ";
-                divDiv.style="display: inline-block; margin-bottom: 4%;   ";
-                word = wd.substring(1).replace("_", " ");
-            } else {
-                newDiv.style="display: inline-block;";
-                divDiv.style="display: inline-block;  ";
-                word = wd;
+            var curr = cunt / 2;
+            if (curr == cnt) {
+                document.getElementById("dog").src = "front.png";
+                return;
             }
 
-            
+            if (cunt % 2 == 0) {
 
-            const newContent = document.createTextNode(word);
-            newDiv.appendChild(newContent);
+                var thediv = document.getElementById(curr);
 
-            divDiv.appendChild(newDiv);
+                if (pauses.includes(curr)) {
 
-            divDiv.id = cnt;
+                    document.getElementById("dog").src = "front.png";
 
-            wherewordsgo.appendChild(divDiv);
+                    if (intid != -1) {
+                        clearInterval(intid);
+                        setTimeout(function () {
+                            document.getElementById("dog").src = "bark.png";
 
-            var space = document.createTextNode(" ");
+                            thediv.style.animationName = "AN" + curr + "-RUNNING";
+                            thediv.style.animationDuration = "0.25s";
+                            thediv.style.animationFillMode = "forwards";
+                            audio.play();
+                            intid = setInterval(myTimer, 300);
+                        }, 800);
+                    }
+                }
+                else {
+                    document.getElementById("dog").src = "bark.png";
 
-            wherewordsgo.appendChild(space);
-            cnt++;
+                    thediv.style.animationName = "AN" + curr + "-RUNNING";
+                    thediv.style.animationDuration = "0.25s";
+                    thediv.style.animationFillMode = "forwards";
+                    audio.play();
+                }
+
+            }
+            else {
+                document.getElementById("dog").src = "side.png";
+
+            }
+            cunt++;
         }
-    }
 
-    var intid = -1;
-    function doanimate(element, color) {
+        function drawtext() {
+            var text = document.getElementById("textage").value;
+            var splittage = text.split('\n');
+            var wherewordsgo = document.getElementById("wherewordsgo");
+            cnt = 0;
+            wherewordsgo.replaceChildren();
 
-        cunt = 0;
-        if (intid != -1)
-            clearInterval(intid);
+
+            for (var line of splittage) {
+
+                var words = line.split(' ');
+
+                if (words.length == 1 && words[0] == "") {
+                    pauses.push(cnt);
+                }
+
+                else {
+                    for (var wd of words) {
+                        if (wd != "") {
+                            const divDiv = document.createElement("div");
+
+                            const newDiv = document.createElement("div");
+
+                            wd = wd.replace("_", " "); // underscores are used to group words together
+
+                            var word = "";
+
+                            if (wd.includes("**")) {
+                                newDiv.style = "display: inline-block; margin-bottom: 2%; margin-top: 2%; font-size: 1.05em; transform: scale(1, 1.65); transform-origin: 0 50%; white-space: nowrap;";
+                                divDiv.style = "display: inline-block;  ";
+                                word = wd.replace("**", "");
+                            } else if (wd.includes("*")) {
+                                newDiv.style = "display: inline-block; font-size: 1.4em; transform: scale(1, 1.4); transform-origin: 0 50%;  white-space: nowrap; ";
+                                divDiv.style = "display: inline-block;  ";
+                                word = wd.replace("*", "");
+                            } else {
+                                newDiv.style = "display: inline-block;";
+                                divDiv.style = "display: inline-block; ";
+                                word = wd;
+                            }
+
+                            const newContent = document.createTextNode(word);
+                            newDiv.appendChild(newContent);
+
+                            divDiv.appendChild(newDiv);
+
+                            divDiv.id = cnt;
+
+                            wherewordsgo.appendChild(divDiv);
+
+                            var space = document.createTextNode(" ");
+                            wherewordsgo.appendChild(space);
+
+                            cnt++;
+                        }
+                    }
+                    var nuline = document.createElement("br");
+                    wherewordsgo.appendChild(nuline);
+                }
+
+            }
+        }
+
+        var intid = -1;
+        function doanimate(element, color) {
+
+            cunt = 0;
+            if (intid != -1)
+                clearInterval(intid);
 
             drawtext();
 
 
-        // start backwards from the end to avoid wrap foulups
-        for (x = cnt; x > 0; x--) {
-            var thediv = document.getElementById(x - 1);
+            // start backwards from the end to avoid wrap foulups
+            for (x = cnt; x > 0; x--) {
+                var thediv = document.getElementById(x - 1);
 
-            var xpos = getOffset(thediv).left;
-            var ypos = getOffset(thediv).top;
+                var xpos = getOffset(thediv).left;
+                var ypos = getOffset(thediv).top;
 
-            var xwidth = thediv.getBoundingClientRect().width;
-            var yheight = thediv.getBoundingClientRect().height;
+                var xwidth = thediv.getBoundingClientRect().width;
+                var yheight = thediv.getBoundingClientRect().height;
 
-            var ogleft = -(xwidth/2) - 100;
-            var ogtop = 110 - (yheight/2);
+                var ogleft = -(xwidth / 2) - 100;
+                var ogtop = 110 - (yheight / 2);
 
-            var animstyle = document.createElement('style');
-            animstyle.type = 'text/css';
-            
-            animstyle.innerHTML = 
-                keyFrames.replace(/ANIMX/g, xpos-300).
-                replace(/ANIMY/g, ypos - 80).
-                replace(/ANIMLEFT/g, ogleft).
-                replace(/ANIMTOP/g, ogtop).
-                replace(/SCX/g, 1.0).
-                replace(/SCY/g, 1.0).
-                replace(/ANIMNAME/g, "AN"+(x-1));
+                var animstyle = document.createElement('style');
+                animstyle.type = 'text/css';
 
-            thediv.style.left = ogleft;
-            thediv.style.top = ogtop;
+                animstyle.innerHTML =
+                    keyFrames.replace(/ANIMX/g, xpos - 300).
+                        replace(/ANIMY/g, ypos - 100).
+                        replace(/ANIMLEFT/g, ogleft).
+                        replace(/ANIMTOP/g, ogtop).
+                        replace(/SCX/g, 1.0).
+                        replace(/SCY/g, 1.0).
+                        replace(/ANIMNAME/g, "AN" + (x - 1));
 
-            thediv.style.animationName="AN" + (x-1) + "-IDLE";
-            thediv.style.animationDuration = "0s";
-            thediv.style.animationFillMode = "forwards";
-            //thediv.style.animationPlayState = "paused";
+                thediv.style.left = ogleft;
+                thediv.style.top = ogtop;
 
-            document.getElementsByTagName('head')[0].appendChild(animstyle);
+                thediv.style.animationName = "AN" + (x - 1) + "-IDLE";
+                thediv.style.animationDuration = "0s";
+                thediv.style.animationFillMode = "forwards";
+                //thediv.style.animationPlayState = "paused";
 
-            thediv.style.position = "absolute";
+                document.getElementsByTagName('head')[0].appendChild(animstyle);
+
+                thediv.style.position = "absolute";
 
 
+            }
+            intid = setInterval(myTimer, 300);
         }
-        intid = setInterval(myTimer, 300);
-    }
 
-    function getOffset(el) {
-        const rect = el.getBoundingClientRect();
-        return {
-            left: rect.left + window.scrollX,
-            top: rect.top + window.scrollY
-        };
-    }
-    
-    </script> 
-    
-    </BODY>
-    </HTML>
+        function getOffset(el) {
+            const rect = el.getBoundingClientRect();
+            return {
+                left: rect.left + window.scrollX,
+                top: rect.top + window.scrollY
+            };
+        }
+
+    </script>
+
+</BODY>
+
+</HTML>
